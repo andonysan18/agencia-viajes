@@ -30,7 +30,7 @@ export default function Footer() {
         <div>
           <h3 className="text-white font-bold uppercase tracking-wider mb-6 text-sm">Explorar</h3>
           <ul className="space-y-3 text-sm">
-            <li><Link href="/destinos" className="hover:text-emerald-400 transition">Destinos Populares</Link></li>
+            <li><Link href="/tours" className="hover:text-emerald-400 transition">Todos los Destinos</Link></li>
             <li><Link href="/charters" className="hover:text-emerald-400 transition">Charters & Ofertas</Link></li>
             <li><Link href="/nosotros" className="hover:text-emerald-400 transition">Sobre Nosotros</Link></li>
             <li><Link href="/blog" className="hover:text-emerald-400 transition">Blog de Viajes</Link></li>
