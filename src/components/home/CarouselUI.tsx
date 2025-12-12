@@ -30,11 +30,8 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
   // --- LÓGICA DE FLECHAS (Suave como la seda) ---
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      // 1. Activamos el modo suave para el clic
       scrollRef.current.style.scrollBehavior = 'smooth';
-      
       const { current } = scrollRef;
-      // Calculamos el ancho de una tarjeta (aprox 350px + gap)
       const scrollAmount = 370; 
       
       if (direction === 'left') {
@@ -48,10 +45,7 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
   // --- LÓGICA DE ARRASTRAR (Respuesta inmediata) ---
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
-    
-    // 2. IMPORTANTE: Desactivamos suavidad al arrastrar para que no haya "lag"
     scrollRef.current.style.scrollBehavior = 'auto';
-    
     setIsDragging(true);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
@@ -63,7 +57,6 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    // 3. Al soltar, devolvemos la suavidad por si el usuario usa las flechas después
     if (scrollRef.current) {
         scrollRef.current.style.scrollBehavior = 'smooth';
     }
@@ -73,7 +66,6 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
     if (!isDragging || !scrollRef.current) return;
     e.preventDefault();
     const x = e.pageX - scrollRef.current.offsetLeft;
-    // 4. Multiplicador de velocidad (1.5 es más natural que 2)
     const walk = (x - startX) * 1.5; 
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
@@ -112,7 +104,6 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
           className={`flex gap-6 overflow-x-auto pb-12 pt-4 px-2 scrollbar-hide 
             ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} 
             snap-x snap-mandatory`} 
-          // Agregamos un poco de padding vertical (py) para que la sombra no se corte
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           onMouseDown={handleMouseDown}
           onMouseLeave={handleMouseLeave}
@@ -125,7 +116,9 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
                 key={trip.id} 
                 onClick={(e) => { if (isDragging) e.preventDefault(); }}
                 draggable={false} 
-                className="min-w-[300px] md:min-w-[350px] h-[450px] relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group snap-center block select-none transform hover:-translate-y-2"
+                // CORRECCIÓN: Agregué [mask-image:linear-gradient(white,white)]
+                // Esto fuerza al navegador a respetar el rounded-3xl durante la animación
+                className="min-w-[300px] md:min-w-[350px] h-[450px] relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group snap-center block select-none transform hover:-translate-y-2 [mask-image:linear-gradient(white,white)]"
             >
                <Image 
                  src={trip.images[0]} 
@@ -153,7 +146,6 @@ export default function CarouselUI({ tours }: { tours: TourProps[] }) {
             </Link>
           ))}
           
-          {/* Espaciador final para que la última tarjeta no quede pegada al borde */}
           <div className="min-w-[20px]"></div> 
         </div>
 

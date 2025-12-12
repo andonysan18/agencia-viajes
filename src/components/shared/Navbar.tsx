@@ -15,10 +15,11 @@ export default function Navbar() {
 
   // DEFINIMOS LOS LINKS MANUALMENTE PARA QUE FUNCIONEN 🔗
   const navLinks = [
-    { name: 'Destinos', href: '/tours' }, // Ahora lleva al catálogo real
-    { name: 'Paquetes', href: '/tours' }, // También lleva al catálogo
-    { name: 'Charters', href: '/tours?q=charter' }, // Truquito: busca la palabra "charter"
-    { name: 'Nosotros', href: '/nosotros' } // Este dará 404 hasta que lo creemos
+    { name: 'Inicio', href: '/' },          // ✅ Agregado: Para volver al Home fácil
+    { name: 'Destinos', href: '/tours' },   // ✅ Catálogo completo
+    // Borramos "Paquetes" para no repetir. "Destinos" ya engloba todo.
+    { name: 'Charters', href: '/tours?q=charter' }, // ✅ Filtro especial
+    { name: 'Nosotros', href: '/nosotros' } // ✅ Página institucional
   ];
 
   return (
