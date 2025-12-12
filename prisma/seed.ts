@@ -85,6 +85,41 @@ const TOURS_TO_CREATE = [
       { day: 2, title: "Perito Moreno", desc: "Navegación y pasarelas frente al glaciar." },
       { day: 3, title: "Ruta a El Chaltén", desc: "Capital nacional del trekking." }
     ]
+  },
+  // NUEVO TOUR: LIMA - MADRID - PARIS
+  {
+    title: "Gran Tour Europa: Francia & España",
+    slug: "europa-francia-espana-17-dias",
+    description: "Un viaje soñado de 17 días recorriendo lo mejor de Francia y España. \n\nINCLUYE: Vuelos con Air Europa, Alojamiento categoría TS, Traslados, Visitas panorámicas en Barcelona, Madrid y París, Excursión a Versalles, Barco en cuevas de Padirac, y recorrido por los Castillos del Loira. \n\n¡La experiencia definitiva para conocer el viejo continente!",
+    basePrice: 3825.00,
+    duration: "17 Días / 16 Noches",
+    location: "Francia & España",
+    isFeatured: true, // Lo ponemos destacado para que salga en la Home
+    category: "Europa",
+    images: [
+      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=2073", // Paris
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=2027", // Madrid
+      "https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=2070"  // Barcelona
+    ],
+    itinerary: [
+      { day: 1, title: "Vuelo a Europa", desc: "Salida en vuelo con destino a París. Noche a bordo." },
+      { day: 2, title: "Llegada a París", desc: "Recepción en aeropuerto y traslado al hotel. Resto del día libre." },
+      { day: 3, title: "París Libre", desc: "Día libre para disfrutar la ciudad de la luz a tu ritmo." },
+      { day: 4, title: "Versalles y Montmartre", desc: "Traslado al Palacio de Versalles, barrio bohemio de Montmartre y visita panorámica de la ciudad." },
+      { day: 5, title: "París a tu aire", desc: "Día libre para compras o museos." },
+      { day: 6, title: "Valle del Loira", desc: "Visita a Blois, Tours y los jardines del Palacio de Villandry. Cena en Amboise." },
+      { day: 7, title: "Castillos de Ensueño", desc: "Castillo de Chenonceau y Chambord. Llegada a Limoges." },
+      { day: 8, title: "Pueblos Medievales", desc: "Cuevas de Lascaux, Sarlat, Beynac y el santuario de Rocamadour." },
+      { day: 9, title: "Cuevas y Vino", desc: "Barco en cuevas de Padirac, Collonges la Rouge y viñedos de Saint Emilion. Llegada a Burdeos." },
+      { day: 10, title: "Burdeos a Lourdes", desc: "Paseo por Burdeos y viaje a los Pirineos. Visita al santuario de Lourdes." },
+      { day: 11, title: "Carcasona y Costa Azul", desc: "Murallas de Carcasona, Narbona y llegada a Marsella (Puerto antiguo)." },
+      { day: 12, title: "Provenza y Romanos", desc: "Aix en Provence, Palacio Papal de Avignon y Acueducto Pont du Gard. Llegada a Barcelona." },
+      { day: 13, title: "Barcelona", desc: "Visita panorámica: Sagrada Familia, Ramblas y cena en Maremagnum." },
+      { day: 14, title: "Ruta Mediterránea", desc: "Peñíscola, paella en Valencia y llegada a Madrid con visita a Plaza Mayor." },
+      { day: 15, title: "Madrid Histórico", desc: "Visita panorámica de los monumentos más representativos. Tarde libre." },
+      { day: 16, title: "Madrid Libre", desc: "Día para compras por Gran Vía o museos." },
+      { day: 17, title: "Despedida", desc: "Traslado al aeropuerto y fin de los servicios." }
+    ]
   }
 ]
 
@@ -124,23 +159,51 @@ async function main() {
         },
 
         // CORRECCIÓN: Fechas en 2026 para asegurar que sean futuras
+        // DENTRO DEL BUCLE for...
+        
         departures: {
-          create: [
-            { 
-              startDate: new Date('2026-03-10'), 
-              endDate: new Date('2026-03-20'), 
-              price: tourData.basePrice, 
-              totalSeats: 20, 
-              soldSeats: 2 
-            },
-            { 
-              startDate: new Date('2026-05-15'), 
-              endDate: new Date('2026-05-25'), 
-              price: Number(tourData.basePrice) + 100, 
-              totalSeats: 20, 
-              soldSeats: 10 
-            }
-          ]
+          create: tourData.slug === "europa-francia-espana-17-dias" 
+          ? [
+              // FECHAS REALES DEL FOLLETO PARA ESTE TOUR
+              { 
+                startDate: new Date('2026-02-08'), 
+                endDate: new Date('2026-02-24'), 
+                price: tourData.basePrice, 
+                totalSeats: 30, 
+                soldSeats: 5 
+              },
+              { 
+                startDate: new Date('2026-02-09'), 
+                endDate: new Date('2026-02-25'), 
+                price: tourData.basePrice, 
+                totalSeats: 30, 
+                soldSeats: 8 
+              },
+              { 
+                startDate: new Date('2026-02-24'), 
+                endDate: new Date('2026-03-12'), 
+                price: tourData.basePrice, 
+                totalSeats: 30, 
+                soldSeats: 0 
+              }
+            ]
+          : [
+              // FECHAS GENÉRICAS PARA LOS OTROS TOURS (LO QUE YA TENÍAS)
+              { 
+                startDate: new Date('2026-03-10'), 
+                endDate: new Date('2026-03-20'), 
+                price: tourData.basePrice, 
+                totalSeats: 20, 
+                soldSeats: 2 
+              },
+              { 
+                startDate: new Date('2026-05-15'), 
+                endDate: new Date('2026-05-25'), 
+                price: Number(tourData.basePrice) + 100, 
+                totalSeats: 20, 
+                soldSeats: 10 
+              }
+            ]
         }
       }
     })

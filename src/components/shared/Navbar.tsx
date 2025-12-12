@@ -13,6 +13,14 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // DEFINIMOS LOS LINKS MANUALMENTE PARA QUE FUNCIONEN 🔗
+  const navLinks = [
+    { name: 'Destinos', href: '/tours' }, // Ahora lleva al catálogo real
+    { name: 'Paquetes', href: '/tours' }, // También lleva al catálogo
+    { name: 'Charters', href: '/tours?q=charter' }, // Truquito: busca la palabra "charter"
+    { name: 'Nosotros', href: '/nosotros' } // Este dará 404 hasta que lo creemos
+  ];
+
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-slate-900/95 backdrop-blur-sm py-4 shadow-md" : "bg-transparent py-6"}`}>
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -29,9 +37,9 @@ export default function Navbar() {
 
         {/* MENU DESKTOP */}
         <div className="hidden md:flex items-center space-x-8">
-          {['Destinos', 'Paquetes', 'Charters', 'Nosotros'].map((item) => (
-            <Link key={item} href={`/${item.toLowerCase()}`} className="text-sm font-medium text-white/90 hover:text-emerald-400 transition-colors uppercase tracking-widest">
-              {item}
+          {navLinks.map((item) => (
+            <Link key={item.name} href={item.href} className="text-sm font-medium text-white/90 hover:text-emerald-400 transition-colors uppercase tracking-widest">
+              {item.name}
             </Link>
           ))}
           <button className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-emerald-400 hover:text-white transition-all">
@@ -39,7 +47,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* MENU MOBILE */}
+        {/* MENU MOBILE (Botón Hamburguesa) */}
         <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white">
           {isOpen ? <X /> : <Menu />}
         </button>
@@ -48,8 +56,16 @@ export default function Navbar() {
       {/* MOBILE DROPDOWN */}
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-slate-900 border-t border-slate-800 p-4 flex flex-col gap-4 shadow-xl">
-           <Link href="/destinos" className="text-white text-lg">Destinos</Link>
-           <Link href="/paquetes" className="text-white text-lg">Paquetes</Link>
+           {navLinks.map((item) => (
+             <Link 
+               key={item.name} 
+               href={item.href} 
+               onClick={() => setIsOpen(false)} // Cerramos menú al hacer clic
+               className="text-white text-lg hover:text-emerald-400"
+             >
+               {item.name}
+             </Link>
+           ))}
         </div>
       )}
     </nav>
