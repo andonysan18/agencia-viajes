@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//generator client {
+//  provider = "prisma-client-js"
+//}
+
+//datasource db {
+//  provider = "postgresql"
+//  url      = env("DATABASE_URL")
+// url      = env("DATABASE_URL")
+//}
+
+// ------------------------------------------
+// AREA 1: PRODUCTO (Catálogo Visual)
+// ------------------------------------------
+
+model Tour {
+  id          String   @id @default(uuid())
+  title       String   // Ej: "Europa Soñada"
+  slug        String   @unique // Para la URL: andinatravel.com/tours/europa-sonada
+  description String   @db.Text // Descripción larga (admite HTML o Markdown)
+  
+  // Multimedia y SEO
+  images      String[] // Array de URLs de fotos (Postgres permite arrays nativos)
+  isFeatured  Boolean  @default(false) // ¿Sale en la portada?
+  category    String   // "Nacional", "Internacional", "Escapada"
+  
+  // Info Base (Referencia)
+  basePrice   Decimal  @db.Decimal(10, 2) // Precio "Desde" (Marketing)
+  duration    String   // "15 Días / 14 Noches"
+  location    String   // "España, Francia, Italia"
+
+  // Relaciones
+  itineraries Itinerary[] // El detalle día por día
+  inclusions  Inclusion[] // Qué incluye y qué no
+  departures  Departure[] // Las fechas reales de salida
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Itinerary {
+  id          String @id @default(uuid())
+  dayNumber   Int    // 1, 2, 3...
+  title       String // "Llegada a Madrid"
+  description String @db.Text // "Recepción en aeropuerto y traslado..."
+  
+  tourId      String
+  tour        Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+model Inclusion {
+  id          String  @id @default(uuid())
+  description String  // "Aéreos incluidos", "Seguro médico", "Propinas no incluidas"
+  isIncluded  Boolean @default(true) // true = INCLUYE, false = NO INCLUYE (aparece tachado o en otra lista)
+  
+  tourId      String
+  tour        Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+}
+
+// ------------------------------------------
+// AREA 2: INVENTARIO (Charters y Salidas)
+// ------------------------------------------
+
+model Departure {
+  id          String   @id @default(uuid())
+  type        String   @default("GROUP") // "GROUP" (Salida grupal), "CHARTER" (Avión propio), "INDIVIDUAL"
+  
+  startDate   DateTime // Fecha ida
+  endDate     DateTime // Fecha vuelta
+  
+  price       Decimal  @db.Decimal(10, 2) // Precio REAL para esta fecha
+  currency    String   @default("USD")    // USD, ARS
+  
+  // Control de Stock (Vital para Charters)
+  totalSeats  Int      // Ej: 50 asientos en el charter
+  soldSeats   Int      @default(0) // Cuántos ya se vendieron
+  
+  tourId      String
+  tour        Tour     @relation(fields: [tourId], references: [id])
+  bookings    Booking[]
+}
+
+// ------------------------------------------
+// AREA 3: VENTAS Y CLIENTES
+// ------------------------------------------
+
+// Para guardar pedidos confirmados de Charters
+model Booking {
+  id            String   @id @default(uuid())
+  customerName  String
+  customerEmail String
+  customerPhone String
+  passengers    Int      // Cantidad de asientos reservados
+  totalPrice    Decimal
+  status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  
+  departureId   String
+  departure     Departure @relation(fields: [departureId], references: [id])
+  
+  createdAt     DateTime @default(now())
+}
+
+// Para consultas generales (Vuelos a medida, preguntas)
+model Lead {
+  id        String   @id @default(uuid())
+  type      String   // "VUELO", "PAQUETE_MEDIDA", "CONTACTO"
+  name      String
+  email     String
+  phone     String
+  message   String   @db.Text
+  status    String   @default("NEW") // NEW, CONTACTED, CLOSED
+  
+  createdAt DateTime @default(now())
+}
