@@ -27,8 +27,8 @@ export default async function TourDetailPage({ params }: { params: { slug: strin
 
   // 1. BUSCAR EN BASE DE DATOS REAL 🔍
   const tour = await prisma.tour.findUnique({
-    where: { 
-      slug: slug 
+    where: {
+      slug: slug
     },
     include: {
       itineraries: {
@@ -54,13 +54,13 @@ export default async function TourDetailPage({ params }: { params: { slug: strin
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
-      
+
       {/* HERO HEADER */}
       <div className="relative h-[60vh] w-full">
-        <Image 
+        <Image
           src={tour.images[0]} // Usamos la primera imagen real
-          alt={tour.title} 
-          fill 
+          alt={tour.title}
+          fill
           className="object-cover"
           priority
         />
@@ -76,8 +76,8 @@ export default async function TourDetailPage({ params }: { params: { slug: strin
               {tour.title}
             </h1>
             <div className="flex flex-wrap gap-6 text-white/90 font-medium">
-              <span className="flex items-center gap-2"><Clock size={18}/> {tour.duration}</span>
-              <span className="flex items-center gap-2"><MapPin size={18}/> {tour.location}</span>
+              <span className="flex items-center gap-2"><Clock size={18} /> {tour.duration}</span>
+              <span className="flex items-center gap-2"><MapPin size={18} /> {tour.location}</span>
             </div>
           </div>
         </div>
@@ -85,10 +85,10 @@ export default async function TourDetailPage({ params }: { params: { slug: strin
 
       {/* CONTENIDO PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-4 mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
-        
+
         {/* COLUMNA IZQUIERDA */}
         <div className="lg:col-span-2 space-y-12">
-          
+
           <section>
             <h2 className="text-2xl font-bold text-slate-900 mb-4">Sobre este viaje</h2>
             <p className="text-slate-600 leading-relaxed text-lg">
@@ -117,36 +117,40 @@ export default async function TourDetailPage({ params }: { params: { slug: strin
           </section>
 
           {/* INCLUSIONES (Si las hubiera en la DB, si no mostramos genéricas por ahora) */}
-          <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">¿Qué incluye?</h2>
+          {/* SECCIÓN DINÁMICA DE INCLUSIONES */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 mb-8">
+            <h3 className="text-2xl font-serif font-bold text-slate-900 mb-6">¿Qué incluye?</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               {/* Aquí podrías mapear tour.inclusions si las cargamos en el seed */}
-               <div className="flex items-center gap-2 text-slate-600">
-                  <CheckCircle size={18} className="text-emerald-500" />
-                  <span>Aéreos Internacionales</span>
-               </div>
-               <div className="flex items-center gap-2 text-slate-600">
-                  <CheckCircle size={18} className="text-emerald-500" />
-                  <span>Hoteles Seleccionados</span>
-               </div>
-               <div className="flex items-center gap-2 text-slate-600">
-                  <CheckCircle size={18} className="text-emerald-500" />
-                  <span>Traslados en destino</span>
-               </div>
+              {tour.inclusions.map((item) => (
+                <div key={item.id} className="flex items-center gap-3">
+                  {/* Si está incluido: Check Verde. Si no: X Roja o gris */}
+                  <div className={`rounded-full p-1 ${item.isIncluded ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                    {item.isIncluded ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                    )}
+                  </div>
+                  <span className={item.isIncluded ? "text-slate-700 font-medium" : "text-slate-400 line-through"}>
+                    {item.description}
+                  </span>
+                </div>
+              ))}
             </div>
-          </section>
+          </div>
         </div>
 
         {/* COLUMNA DERECHA: BOOKING CARD DINÁMICA */}
         <div className="relative">
-          <TourClientWrapper 
-              departures={tour.departures.map(d => ({
-                ...d,
-                price: Number(d.price) // Conversión importante para el cliente
-              }))}
-              basePrice={Number(tour.basePrice)}
-              tourTitle={tour.title}
-           />
+          <TourClientWrapper
+            departures={tour.departures.map(d => ({
+              ...d,
+              price: Number(d.price) // Conversión importante para el cliente
+            }))}
+            basePrice={Number(tour.basePrice)}
+            tourTitle={tour.title}
+          />
         </div>
 
       </div>
