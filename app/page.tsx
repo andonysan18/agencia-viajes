@@ -6,6 +6,8 @@ import FeaturedCarousel from "@/src/components/home/FeaturedCarousel";
 import WhyChooseUs from "@/src/components/home/WhyChooseUs";
 import CategoriesGrid from "@/src/components/home/CategoriesGrid";
 import Newsletter from "@/src/components/home/Newsletter";
+import HeroBento from "@/src/components/shared/HeroBento";
+import HeroSlider from "@/src/components/shared/HeroSlider";
 
 export default function Home() {
   return (

@@ -1,7 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  // Sin 'output', sin 'engineType' raro, sin 'previewFeatures'. 
-  // Solo lo básico que funciona.
 }
 
 datasource db {
@@ -19,7 +17,11 @@ model Tour {
   images      String[]
   basePrice   Decimal     @db.Decimal(10, 2)
   duration    String
-  location    String
+  location    String      // Ej: "Buenos Aires", "Lima"
+  
+  // 🔥 AQUÍ ESTÁ EL CAMBIO:
+  country     String      @default("Argentina") 
+
   isFeatured  Boolean     @default(false)
   category    String
   
@@ -63,16 +65,16 @@ model Departure {
 }
 
 model Booking {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   customerName  String
   customerEmail String
   customerPhone String
   passengers    Int
   totalPrice    Decimal
-  status        String   @default("PENDING")
+  status        String    @default("PENDING")
   departureId   String
   departure     Departure @relation(fields: [departureId], references: [id])
-  createdAt     DateTime @default(now())
+  createdAt     DateTime  @default(now())
 }
 
 model Lead {

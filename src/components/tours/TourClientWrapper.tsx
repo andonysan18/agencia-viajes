@@ -28,6 +28,29 @@ const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("es-AR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(date));
 };
 
+
+// **********************************************
+// ********* LÓGICA DE WHATSAPP *****************
+// **********************************************
+const WHATSAPP_NUMBER = "541166399990"; // Número en formato internacional (sin + ni guiones)
+
+const buildWhatsappLink = (tourTitle: string, departureDate: string, price: string) => {
+    // Mensaje personalizado con los detalles del tour
+    const message = `¡Hola! Me interesa cotizar el siguiente viaje:
+    
+    ✈️ Paquete: ${tourTitle}
+    📅 Fecha de Salida: ${departureDate}
+    💰 Precio Desde: ${price}
+    
+    ¿Podrían confirmarme la disponibilidad y formas de pago? ¡Gracias!`;
+
+    // Codificar el mensaje y construir el link final
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+};
+// **********************************************
+
+
 export default function TourClientWrapper({ departures, basePrice, tourTitle }: WrapperProps) {
     const [selectedDeparture, setSelectedDeparture] = useState<Departure | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,6 +65,19 @@ export default function TourClientWrapper({ departures, basePrice, tourTitle }: 
             alert("Selecciona una fecha disponible.");
         }
     };
+
+    // **********************************************
+    // HANDLER PARA WHATSAPP
+    // **********************************************
+    const handleWhatsappClick = () => {
+        // Obtenemos los datos necesarios para el mensaje
+        const dateStr = activeDeparture ? formatDate(activeDeparture.startDate) : "Sin fechas seleccionadas";
+        const priceStr = formatPrice(Number(activeDeparture ? activeDeparture.price : basePrice));
+        
+        const link = buildWhatsappLink(tourTitle, dateStr, priceStr);
+        window.open(link, '_blank'); // Abrir en una nueva pestaña/app
+    };
+
 
     const hasDepartures = departures.length > 0;
 
@@ -74,10 +110,10 @@ export default function TourClientWrapper({ departures, basePrice, tourTitle }: 
                                     key={dep.id}
                                     onClick={() => !isSoldOut && setSelectedDeparture(dep)}
                                     className={`p-3 rounded-xl border flex justify-between items-center cursor-pointer transition-all ${isSoldOut
-                                            ? 'bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed'
-                                            : isSelected
-                                                ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                                                : 'bg-white border-slate-200 hover:border-emerald-300'
+                                        ? 'bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed'
+                                        : isSelected
+                                            ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                            : 'bg-white border-slate-200 hover:border-emerald-300'
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -123,7 +159,11 @@ export default function TourClientWrapper({ departures, basePrice, tourTitle }: 
                     Solicitar Reserva
                 </button>
 
-                <button className="w-full bg-white text-slate-700 border border-slate-300 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                {/* BOTÓN DE WHATSAPP CON EL NUEVO HANDLER */}
+                <button 
+                    onClick={handleWhatsappClick}
+                    className="w-full bg-white text-slate-700 border border-slate-300 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
+                >
                     <Phone size={18} /> Consultar por WhatsApp
                 </button>
             </div>

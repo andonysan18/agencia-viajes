@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, Phone, ArrowRight } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar2() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
@@ -21,15 +21,18 @@ export default function Navbar() {
     const navLinks = [
         { name: 'Inicio', href: '/' },
         { name: 'Destinos', href: '/tours' },
-        { name: 'Salidas Grupales', href: '/charters' }, 
+        // Cambiado a 'Salidas Grupales' para ser más comercial
+        { name: 'Salidas Grupales', href: '/charters' },
         { name: 'Nosotros', href: '/nosotros' },
     ];
 
+    // DEFINICIÓN DE CLASES DINÁMICAS
     const isSolid = !isHome || isScrolled;
     const navBackground = isSolid 
         ? "bg-slate-900 shadow-md border-b border-white/5 py-3" 
-        : "bg-transparent py-5"; 
+        : "bg-slate-900 shadow-md border-b border-white/5 py-3"; 
     
+    // Función para abrir WhatsApp con mensaje
     const openWhatsApp = () => {
         const message = "Hola Andina Travel, quisiera cotizar un viaje.";
         window.open(`https://wa.me/5491166399990?text=${encodeURIComponent(message)}`, "_blank");
@@ -40,8 +43,7 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
                 
                 {/* 1. LOGO */}
-                {/* Agregamos md:mr-4 para dar un poco más de espacio al logo en la tablet */}
-                <Link href="/" className="flex items-center gap-2 group md:mr-4"> 
+                <Link href="/" className="flex items-center gap-2 group">
                     <div className="relative w-12 h-12 md:w-14 md:h-14 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg">
                         <Image 
                             src="/escudoAndinaTravel.png" 
@@ -52,9 +54,8 @@ export default function Navbar() {
                         />
                     </div>
 
-                    <div className="flex flex-col justify-center">
-                        {/* Título: Mantenemos 2xl y reducimos a 2xl en MD para liberar ancho */}
-                        <span className="font-serif font-bold tracking-wide leading-none text-2xl md:text-2xl">
+                    <div className="flex flex-col justify-center -space-y-1">
+                        <span className="font-serif font-bold tracking-wide leading-none text-2xl md:text-3xl">
                             <span 
                                 className={`text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-amber-400 to-amber-600 drop-shadow-[0_2px_1px_rgba(0,0,0,0.8)] transition-all ${isSolid ? 'drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]' : 'drop-shadow-[0_2px_4px_rgba(0,0,0,1)]'}`}
                             >
@@ -62,15 +63,10 @@ export default function Navbar() {
                             </span>
                         </span>
                         
-                        {/* SUBTÍTULO LEGAL: Usamos mt-1, md:whitespace-nowrap y forzamos text-[9px] en md: */}
-                        <span 
-                            className={`
-                                text-[9px] md:text-[9px] font-bold tracking-widest uppercase mt-1 transition-colors duration-300 
-                                md:whitespace-nowrap 
-                                ${isSolid ? 'text-slate-300' : 'text-white/80 drop-shadow-md'}
-                            `}
-                        >
-                            DE PERUVIAN REPS LEG 14024 DISP. 644
+                        {/* SUBTÍTULO INSTITUCIONAL: Visible siempre, con color de contraste */}
+                        {/* En Home/Transparente: Sombra clara. En Scroll/Fondo Negro: Texto claro. */}
+                        <span className={`text-[9px] md:text-[10px] font-bold tracking-widest uppercase ml-1 transition-colors duration-300 ${isSolid ? 'text-slate-300' : 'text-white/80 drop-shadow-md'}`}>
+                            de Peruvian Reps Leg 14024 Disp. 644
                         </span>
                     </div>
                 </Link>
@@ -98,6 +94,7 @@ export default function Navbar() {
 
                 {/* 3. BOTÓN DE ACCIÓN (Desktop) */}
                 <div className="hidden md:flex items-center gap-4">
+                    {/* TELÉFONO VISIBLE SIEMPRE PARA UN CONTACTO RÁPIDO */}
                     <div className="text-right hidden lg:block">
                         <span className="block text-[10px] text-slate-400 uppercase font-bold">Ayuda 24/7</span>
                         <span className="block text-xs text-white font-medium flex items-center gap-1">

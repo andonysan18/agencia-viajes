@@ -20,7 +20,7 @@ export default function HeroBento() {
           </h1>
           
           <p className="text-lg text-slate-600 leading-relaxed max-w-md">
-            Descubre charters exclusivos y destinos ocultos. La aventura comienza donde termina tu zona de confort.
+            Descubre salidas grupales exclusivas y destinos ocultos. La aventura comienza donde termina tu zona de confort.
           </p>
 
           {/* Buscador Compacto */}

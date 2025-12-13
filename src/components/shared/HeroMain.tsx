@@ -20,7 +20,7 @@ export default function HeroMain() {
       {/* 2. CONTENIDO CENTRADO */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-10">
         <span className="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-300 font-bold tracking-widest uppercase text-xs mb-6 animate-fade-in">
-          Agencia Oficial IATA
+          Agencia Oficial
         </span>
         
         <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-lg">
